@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{9E6512F1-F855-43C5-8A1C-9309E843A4AC}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup>
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <PropertyGroup>
+    <!-- Directories -->
+    <ArduinoHardwarePath>C:\Program Files (x86)\Arduino\hardware\arduino\avr\</ArduinoHardwarePath>
+    <ArduinoLibraryPath>C:\Program Files (x86)\Arduino\libraries\</ArduinoLibraryPath>
+    <ArduinoToolsPath>C:\Program Files (x86)\Arduino\hardware\tools\avr\</ArduinoToolsPath>
+    <UserLibraryPath>$(HOMEDRIVE)$(HOMEPATH)\Documents\Arduino\libraries\</UserLibraryPath>
+    <!-- Tools -->
+    <Addr2LineExe>$(ArduinoToolsPath)bin\avr-addr2line.exe</Addr2LineExe>
+    <ArExe>$(ArduinoToolsPath)bin\avr-gcc-ar.exe</ArExe>
+    <AvrDudeExe>$(ArduinoToolsPath)bin\avrdude.exe</AvrDudeExe>
+    <ComFwdExe>$(SolutionDir)Tools\ComFwd.exe</ComFwdExe>
+    <GccExe>$(ArduinoToolsPath)bin\avr-gcc.exe</GccExe>
+    <GppExe>$(ArduinoToolsPath)bin\avr-g++.exe</GppExe>
+    <NinjaExe>$(VSAPPIDDIR)CommonExtensions\Microsoft\CMake\Ninja\ninja.exe</NinjaExe>
+    <ObjCopyExe>$(ArduinoToolsPath)bin\avr-objcopy.exe</ObjCopyExe>
+    <SizeExe>$(ArduinoToolsPath)bin\avr-size.exe</SizeExe>
+    <!-- Compiler -->
+    <GccOptionsC>-c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p</GccOptionsC>
+    <GccOptionsLink>-w -Os -g -flto -fuse-linker-plugin -Wl,--gc-sections -mmcu=atmega328p -lm</GccOptionsLink>
+    <GccOptionsS>-c -g -x assembler-with-cpp -flto -MMD -mmcu=atmega328p</GccOptionsS>
+    <GppOptions>-c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -Wno-error=narrowing -MMD -flto -mmcu=atmega328p</GppOptions>
+    <!-- Upload -->
+    <AvrDudeArgs>-C "$(ArduinoToolsPath)etc\avrdude.conf" -carduino -v -patmega328p -P $(ComPort) -b115200 -D</AvrDudeArgs>
+    <!-- Monitor -->
+    <ComPortBaud>9600</ComPortBaud>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Preprocessor -->
+    <PreprocessorList Condition="'$(Configuration)'=='Debug'" Include="_DEBUG" />
+    <PreprocessorList Condition="'$(Configuration)'=='Release'" Include="NDEBUG" />
+    <PreprocessorList Include="ARDUINO=10805" />
+    <PreprocessorList Include="__AVR_ATmega328P__" />
+    <PreprocessorList Include="ARDUINO_ARCH_AVR" />
+    <PreprocessorList Include="ARDUINO_AVR_NANO" />
+    <PreprocessorList Include="F_CPU=16000000L" />
+    <!-- Core -->
+    <IncludeList Include="$(ArduinoToolsPath)lib\gcc\avr\7.3.0\include" />
+    <IncludeList Include="$(ArduinoToolsPath)avr\include" />
+    <IncludeList Include="$(ArduinoHardwarePath)variants\eightanaloginputs" />
+    <IncludeList Include="$(ArduinoHardwarePath)cores\arduino" />
+    <SourceListC Include="$(ArduinoHardwarePath)\cores\arduino\*.c" />
+    <SourceListCpp Include="$(ArduinoHardwarePath)\cores\arduino\*.cpp" />
+    <SourceListS Include="$(ArduinoHardwarePath)\cores\arduino\*.s" />
+    <!-- Libraries -->
+    <IncludeList Include="$(ArduinoHardwarePath)libraries\Wire\src" />
+    <SourceListC Include="$(ArduinoHardwarePath)libraries\Wire\src\utility\*.c" />
+    <SourceListCpp Include="$(ArduinoHardwarePath)libraries\Wire\src\*.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+  </ItemGroup>
+  <PropertyGroup>
+    <!-- Visual Studio -->
+    <IncludePath>@(IncludeList)</IncludePath>
+    <NMakeBuildCommandLine>msbuild.exe -t:ArduinoBuild -p:Configuration="$(Configuration)" -p:ComPort="COM3" -p:SolutionDir="$(ProjectDir)..\\" -nologo -v:m $(ProjectFileName)</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>msbuild.exe -t:ArduinoClean -p:SolutionDir="$(ProjectDir)..\\" -nologo -v:q $(ProjectFileName)</NMakeCleanCommandLine>
+    <NMakePreprocessorDefinitions>@(PreprocessorList)</NMakePreprocessorDefinitions>
+    <OutDir>$(SolutionDir)$(Configuration)</OutDir>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <!-- Environment -->
+  <Target Name="SetEnvironment">
+    <SetEnv Name="CPATH" Value="$(IncludePath)" Prefix="false" />
+  </Target>
+  <!-- Build -->
+  <Target Name="NinjaBuild" DependsOnTargets="SetEnvironment">
+    <ItemGroup>
+      <AdditionalIncludeList Include="%(ClCompile.AdditionalIncludeDirectories)" />
+      <SourceListCpp Include="@(ClCompile->'%(FullPath)')" />
+      <NinjaSourceListC Include="@(SourceListC)">
+        <InputPath>$([MSBuild]::MakeRelative($(SolutionDir), %(SourceListC.FullPath)).Replace(' ', '$ '))</InputPath>
+        <OutputPath>$(Configuration)\$([MSBuild]::MakeRelative($(SolutionDir), %(SourceListC.FullPath)).Replace(' ', '$ ').Replace('.', '_')).o</OutputPath>
+      </NinjaSourceListC>
+      <NinjaSourceListCpp Include="@(SourceListCpp)">
+        <InputPath>$([MSBuild]::MakeRelative($(SolutionDir), %(SourceListCpp.FullPath)).Replace(' ', '$ '))</InputPath>
+        <OutputPath>$(Configuration)\$([MSBuild]::MakeRelative($(SolutionDir), %(SourceListCpp.FullPath)).Replace(' ', '$ ').Replace('.', '_')).o</OutputPath>
+      </NinjaSourceListCpp>
+      <NinjaSourceListS Include="@(SourceListS)">
+        <InputPath>$([MSBuild]::MakeRelative($(SolutionDir), %(SourceListS.FullPath)).Replace(' ', '$ '))</InputPath>
+        <OutputPath>$(Configuration)\$([MSBuild]::MakeRelative($(SolutionDir), %(SourceListS.FullPath)).Replace(' ', '$ ').Replace('.', '_')).o</OutputPath>
+      </NinjaSourceListS>
+    </ItemGroup>
+    <PropertyGroup>
+      <BuildArchive>build $(Configuration)\$(ProjectName).a: ar</BuildArchive>
+      <BuildArchive>$(BuildArchive) @(NinjaSourceListS->'%(OutputPath)', ' ')</BuildArchive>
+      <BuildArchive>$(BuildArchive) @(NinjaSourceListC->'%(OutputPath)', ' ')</BuildArchive>
+      <BuildArchive>$(BuildArchive) @(NinjaSourceListCpp->'%(OutputPath)', ' ')</BuildArchive>
+      <BuildEep>build $(Configuration)\$(ProjectName).eep: eep $(Configuration)\$(ProjectName).elf</BuildEep>
+      <BuildElf>build $(Configuration)\$(ProjectName).elf: link $(Configuration)\$(ProjectName).a</BuildElf>
+      <BuildHex>build $(Configuration)\$(ProjectName).hex: hex $(Configuration)\$(ProjectName).elf</BuildHex>
+      <CompileC>build @(NinjaSourceListC->'%(OutputPath): cc %(InputPath)', '%0D%0Abuild%20')</CompileC>
+      <CompileCpp>build @(NinjaSourceListCpp->'%(OutputPath): cpp %(InputPath)', '%0D%0Abuild%20')</CompileCpp>
+      <CompileS>build @(NinjaSourceListS->'%(OutputPath): asm %(InputPath)', '%0D%0Abuild%20')</CompileS>
+      <IncludeArg>-I @(AdditionalIncludeList->'"%(Identity)"', ' -I ')</IncludeArg>
+      <IncludeArg>$(IncludeArg.Replace('\', '/'))</IncludeArg>
+      <PreprocessorArg>-D@(PreprocessorList, ' -D')</PreprocessorArg>
+    </PropertyGroup>
+    <ItemGroup>
+      <CMakeLines Include="cflags=$(GccOptionsC)" />
+      <CMakeLines Include="sflags=$(GccOptionsS)" />
+      <CMakeLines Include="cppflags=$(GppOptions)" />
+      <CMakeLines Include="pparg=$(PreprocessorArg)" />
+      <CMakeLines Include="iarg=$(IncludeArg)" />
+      <CMakeLines Include="ldargs=$(GccOptionsLink)" />
+      <CMakeLines Include="rule asm" />
+      <CMakeLines Include="%20%20command = %22$(GccExe)%22 -MMD -MF $out.dep $sflags $pparg $iarg-c $in -o $out" />
+      <CMakeLines Include="%20%20depfile = $out.dep" />
+      <CMakeLines Include="rule cc" />
+      <CMakeLines Include="%20%20command = %22$(GccExe)%22 -MMD -MF $out.dep $cflags $pparg $iarg -c $in -o $out" />
+      <CMakeLines Include="%20%20depfile = $out.dep" />
+      <CMakeLines Include="rule cpp" />
+      <CMakeLines Include="%20%20command = %22$(GppExe)%22 -MMD -MF $out.dep $cppflags $pparg $iarg -c $in -o $out" />
+      <CMakeLines Include="%20%20depfile = $out.dep" />
+      <CMakeLines Include="rule ar" />
+      <CMakeLines Include="%20%20command = %22$(ArExe)%22 rcs $out $in" />
+      <CMakeLines Include="rule link" />
+      <CMakeLines Include="%20%20command = %22$(GccExe)%22 $ldargs -o $out $in" />
+      <CMakeLines Include="rule eep" />
+      <CMakeLines Include="%20%20command = %22$(ObjCopyExe)%22 -O ihex -j .eeprom --set-section-flags=.eeprom=alloc,load --no-change-warnings --change-section-lma .eeprom=0 $in $out" />
+      <CMakeLines Include="rule hex" />
+      <CMakeLines Include="%20%20command = %22$(ObjCopyExe)%22 -O ihex -R .eeprom $in $out" />
+      <CMakeLines Include="$(CompileS)" />
+      <CMakeLines Include="$(CompileC)" />
+      <CMakeLines Include="$(CompileCpp)" />
+      <CMakeLines Include="$(BuildArchive)" />
+      <CMakeLines Include="$(BuildElf)" />
+      <CMakeLines Include="$(BuildEep)" />
+      <CMakeLines Include="$(BuildHex)" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(SolutionDir)build.ninja" Lines="@(CMakeLines)" Overwrite="true" />
+    <ItemGroup>
+      <BuildLines Include="%22$(NinjaExe)%22" />
+    </ItemGroup>
+    <Exec Command="@(BuildLines->'%(Identity)&amp;')" WorkingDirectory="$(SolutionDir)" />
+  </Target>
+  <Target Name="ShowSize" DependsOnTargets="NinjaBuild">
+    <Message Text="%20" Importance="High" />
+    <Exec Command="%22$(SizeExe)%22 -C --mcu=atmega328p %22$(Configuration)\$(ProjectName).elf%22" WorkingDirectory="$(SolutionDir)" />
+  </Target>
+  <Target Name="CheckComPort">
+    <Exec Command="mode $(ComPort) &gt; nul" IgnoreExitCode="true">
+      <Output PropertyName="CheckComPortExitCode" TaskParameter="ExitCode" />
+    </Exec>
+    <PropertyGroup>
+      <ComPortPresent Condition="'$(CheckComPortExitCode)'=='0'">true</ComPortPresent>
+    </PropertyGroup>
+  </Target>
+  <Target Name="Upload" Condition="'$(ComPortPresent)'=='true'" DependsOnTargets="ShowSize;CheckComPort">
+    <Exec Command="%22$(AvrDudeExe)%22 $(AvrDudeArgs) -Uflash:w:%22$(Configuration)\$(ProjectName).hex%22:i" WorkingDirectory="$(SolutionDir)" />
+  </Target>
+  <Target Name="Monitor" Condition="'$(ComPortPresent)'=='true'" DependsOnTargets="Upload">
+    <Message Text="Forwarding COM-Port..." Importance="High" />
+    <Exec Command="%22$(ComFwdExe)%22 $(ComPort):$(ComPortBaud) $(Addr2LineExe) $(OutDir)$(ProjectName).elf" />
+  </Target>
+  <!-- Default Targets -->
+  <Target Name="ArduinoClean">
+    <ItemGroup>
+      <CleanLines Include="rd /s /q Debug" />
+      <CleanLines Include="rd /s /q Release" />
+      <CleanLines Include="del build.ninja" />
+      <CleanLines Include="del .ninja_deps" />
+      <CleanLines Include="del .ninja_log" />
+    </ItemGroup>
+    <Exec Command="@(CleanLines->'%(Identity)&amp;')" WorkingDirectory="$(SolutionDir)" />
+  </Target>
+  <Target Name="ArduinoBuild" DependsOnTargets="ShowSize;Monitor">
+  </Target>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

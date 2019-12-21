@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArduinoNano", "ArduinoNano\ArduinoNano.vcxproj", "{9E6512F1-F855-43C5-8A1C-9309E843A4AC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9E6512F1-F855-43C5-8A1C-9309E843A4AC}.Debug|AVR.ActiveCfg = Debug|Win32
+		{9E6512F1-F855-43C5-8A1C-9309E843A4AC}.Debug|AVR.Build.0 = Debug|Win32
+		{9E6512F1-F855-43C5-8A1C-9309E843A4AC}.Release|AVR.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1ED46E7-C91C-4638-8226-D75DEC101E60}
+	EndGlobalSection
+EndGlobal
